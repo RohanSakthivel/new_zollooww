@@ -46,7 +46,7 @@ header h1 {
 /* Grid Layout for Products */
 #warehouse-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* Two products per row */
     gap: 16px;
     margin: 20px auto;
     padding: 0 15px;
@@ -186,16 +186,8 @@ button:active {
         margin-bottom: 10px;
     }
 
-    .warehouse-section {
-        padding: 10px;
-    }
-
-    .product-card {
-        padding: 8px;
-    }
-
     #warehouse-container {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: 1fr; /* One product per row on smaller screens */
     }
 
     button {
@@ -208,7 +200,6 @@ button:active {
         max-width: 90%;
     }
 }
-
 
     </style>
 </head>
