@@ -45,7 +45,7 @@ header h1 {
 /* Grid Layout for Products */
 #warehouse-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two products per row */
+    grid-template-columns: repeat(2, 1fr); /* Two products per row on larger screens */
     gap: 16px;
     margin: 20px auto;
     padding: 0 15px;
@@ -66,7 +66,6 @@ header h1 {
     align-items: center;
     justify-content: center;
     transition: box-shadow 0.2s ease;
-    position: relative; /* Required for grid line */
 }
 
 .product-card:hover {
