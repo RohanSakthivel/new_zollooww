@@ -5,187 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
- * {
-    box-sizing: border-box;
+ body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #ffffff; /* White background */
+    color: #333; /* Dark text color for readability */
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Header Styling */
 header {
-    background-color: #ff6700;
-    padding: 10px 15px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 70px;
+    background-color: #FFA500; /* Orange header */
+    padding: 20px;
+    text-align: center;
 }
 
 header img {
-    height: 40px;
-    margin-right: 10px;
+    width: 100px; /* Logo size */
+    height: auto; /* Maintain aspect ratio */
 }
 
-header h1 {
-    font-size: 1.5em;
-    font-weight: 600;
-    margin: 0;
-    color: white;
+h1 {
+    margin: 10px 0;
+    color: #fff; /* White text for header */
 }
 
-/* Grid Layout for Products */
+h3 {
+    text-align: center;
+}
+
 #warehouse-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two products per row on larger screens */
-    gap: 16px;
-    margin: 20px auto;
-    padding: 0 15px;
-    max-width: 1200px;
-    border: 1px solid #ccc; /* Border around the grid */
-    border-radius: 8px; /* Rounded corners */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
 }
 
-/* Product Card Styling */
+.warehouse-section {
+    width: 100%; /* Full width for each warehouse section */
+    margin-bottom: 20px; /* Space between sections */
+}
+
 .product-card {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    width: 100px; /* Default width for larger screens */
-    height: 100px; /* Default height for larger screens */
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: box-shadow 0.2s ease;
+    background-color: #ffffff; /* White background for product cards */
+    border: 1px solid #FFA500; /* Orange border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 10px;
+    padding: 10px;
+    flex: 0 1 calc(50% - 20px); /* Responsive 2x2 layout */
+    box-sizing: border-box; /* Include padding and border in width */
+    transition: transform 0.2s; /* Smooth scale on hover */
 }
 
 .product-card:hover {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-}
-
-.product-name {
-    font-size: 0.85em;
-    font-weight: 600;
-    color: #ff6700;
-    text-align: center;
-    margin-top: 5px;
-}
-
-.product-details {
-    color: #555;
-    font-size: 0.75em;
-    text-align: center;
+    transform: scale(1.05); /* Slight zoom on hover */
 }
 
 .productimage {
-    height: 50px; 
-    width: 50px;
-    margin-bottom: 5px;
+    max-width: 100%; /* Responsive image */
+    height: auto; /* Maintain aspect ratio */
 }
 
-/* Cart Container */
-.cart-container {
-    border: 1px solid #ff6700;
+.product-name {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.product-details {
+    margin: 5px 0;
+}
+
+/* Cart styles */
+.ooo {
+    background-color: #FFA500; /* Orange background for cart */
+    color: #fff; /* White text */
+    padding: 20px;
     border-radius: 8px;
-    background-color: #fff;
-    padding: 12px;
     margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Order Details */
-#order-details {
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #fff;
+.cart-item {
+    margin: 5px 0;
 }
 
-/* Button Styling */
-button {
-    background-color: #ff6700;
-    color: #fff;
+#place-order-btn {
+    background-color: #FF4500; /* Different shade of orange for button */
+    color: #fff; /* White text */
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    padding: 8px 12px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.2s; /* Smooth transition */
 }
 
-button:hover {
-    background-color: #e65c00;
-    transform: scale(1.05);
+#place-order-btn:hover {
+    background-color: #FF6347; /* Lighter shade on hover */
 }
 
-button:active {
-    transform: scale(1.02);
-}
-
-/* Warehouse Section */
-.warehouse-section {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 12px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    transition: transform 0.3s ease;
-}
-
-.warehouse-section:hover {
-    transform: scale(1.02);
-}
-
-.warehouse-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #ff6700;
-    margin-bottom: 8px;
-}
-
-/* Cart Summary Box */
-.ooo {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    max-width: 400px;
-    margin: 20px auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-/* Responsive Design */
+/* Responsive styles */
 @media (max-width: 768px) {
-    #warehouse-container {
-        grid-template-columns: repeat(2, 1fr); /* Two products per row on mobile */
-    }
-
     .product-card {
-        width: 120px; /* Width for mobile */
-        height: 400px; /* Height for mobile */
+        flex: 0 1 calc(50% - 20px); /* Two cards per row */
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        flex: 0 1 100%; /* Full width on small screens */
     }
 
-    button {
-        width: 100px;
-        padding: 5px;
-    }
-
-    .ooo {
-        padding: 15px;
-        max-width: 90%;
+    #place-order-btn {
+        width: 100%; /* Full width button */
     }
 }
 
