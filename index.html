@@ -5,141 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-        /* General Styles */
-body {
-    font-family: 'Arial', sans-serif;
+    /* Global Reset and Base Styles */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #f4f7f6; /* Light background for a softer look */
-    color: #333; /* Dark text for better readability */
 }
 
-/* Header Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styling */
 header {
-    background-color: #007bff; /* Bright blue background */
-    color: white; /* White text for contrast */
-    padding: 20px; /* Increased padding for header */
-    text-align: center; /* Center align text */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    background-color: #ff6700;
+    padding: 10px 15px;
+    color: white;
+    display: flex; /* Flex display for horizontal layout */
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 70px;
 }
 
-/* Container for Main Content */
-.container {
-    width: 90%;
-    max-width: 1200px; /* Maximum width for large screens */
-    margin: 20px auto; /* Center align the container with margin */
+header img {
+    height: 40px;
+    margin-right: 10px;
+    display: inline-block; /* Ensures proper alignment */
 }
 
-/* Product Card Container */
-.product-card-container {
-    display: flex;
-    flex-wrap: wrap; /* Allow cards to wrap */
-    justify-content: space-between; /* Space between cards */
-    padding: 10px; /* Padding around the container */
+header h1 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0;
+    display: inline-block; /* Ensures proper alignment with image */
+    color: white;
 }
 
-/* Individual Product Card Styling */
+/* Warehouse Section */
+.warehouse-section {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 20px 0;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.warehouse-section:hover {
+    transform: scale(1.02);
+}
+
+.warehouse-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #ff6700;
+}
+
+/* Compact Product Card */
 .product-card {
-    background: #ffffff;
-    border: 1px solid #e0e0e0; /* Light gray border */
-    border-radius: 15px; /* More rounded corners for a modern look */
-    padding: 20px; /* Increased padding */
-    flex: 0 1 calc(50% - 15px); /* Two cards per row, adjusting for gap */
-    margin-bottom: 15px; /* Increased space below each card */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Initial shadow for depth */
-    position: relative; /* Position relative for hover effect */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin: 8px 0;
+    padding: 8px 10px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    transition: box-shadow 0.2s ease;
+    min-width: 150px;
 }
 
-/* Hover effect for product cards */
 .product-card:hover {
-    transform: translateY(-10px); /* More pronounced hover effect */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* Product Image Styling */
-.product-card img {
-    max-width: 100%; /* Responsive image */
-    border-radius: 10px; /* Rounded corners for images */
-    margin-bottom: 10px; /* Space below the image */
+.product-name {
+    font-size: 1em;
+    font-weight: 600;
+    color: #ff6700;
 }
 
-/* Product Title Styling */
-.product-card h2 {
-    font-size: 1.5em; /* Larger font for product titles */
-    margin: 0 0 10px 0; /* No margin on top, space below */
-    color: #007bff; /* Color for titles */
+.product-details {
+    color: #555;
+    font-size: 0.85em;
+    margin-top: 4px;
 }
 
-/* Product Description Styling */
-.product-card p {
-    font-size: 0.9em; /* Smaller font for descriptions */
-    color: #666; /* Gray color for descriptions */
-    margin-bottom: 15px; /* Space below the description */
+/* Cart Container */
+.cart-container {
+    border: 1px solid #ff6700;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 12px;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive Styles for Product Cards */
-@media (max-width: 600px) {
-    .product-card {
-        flex: 0 1 calc(50% - 15px); /* Two cards per row */
-    }
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
 }
 
-@media (max-width: 400px) {
-    .product-card {
-        flex: 0 1 calc(100% - 15px); /* Full width for very small screens */
-    }
+/* Order Details */
+#order-details {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
 }
 
-/* Footer Styles */
-footer {
-    background-color: #333; /* Dark background for footer */
-    color: white; /* White text color for contrast */
-    text-align: center; /* Center align text */
-    padding: 20px; /* Increased padding for footer */
-    position: relative; /* Position relative for footer */
-    bottom: 0;
-    width: 100%; /* Full width footer */
-}
-
-/* Button Styles */
+/* Button Styling */
 button {
-    background-color: #28a745; /* Green background for buttons */
-    color: white; /* White text color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners for buttons */
-    padding: 12px 20px; /* Padding for buttons */
-    cursor: pointer; /* Pointer cursor for buttons */
-    font-size: 1em; /* Consistent font size */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    background-color: #ff6700;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background-color: #218838; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly increase size on hover */
+    background-color: #e65c00;
+    transform: scale(1.05);
 }
 
-/* Card Badge for Sale */
-.card-badge {
-    position: absolute; /* Position absolute for badge */
-    top: 10px; /* Position badge at the top */
-    right: 10px; /* Position badge at the right */
-    background-color: #ff4136; /* Red background for sale badge */
-    color: white; /* White text for badge */
-    padding: 5px 10px; /* Padding for badge */
-    border-radius: 5px; /* Rounded corners for badge */
-    font-size: 0.8em; /* Smaller font size for badge */
+button:active {
+    transform: scale(1.02);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    header img {
+        margin-bottom: 10px;
+    }
+
+    .warehouse-section {
+        padding: 10px;
+    }
+
+    .product-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px;
+    }
+
+    .cart-container {
+        padding: 10px;
+    }
+
+    button {
+        width: 10px;
+        padding: 5px;
+    }
+}
+.ooo {
+    background-color: #f9f9f9; /* Light background color */
+    padding: 20px; /* Spacing around the content */
+    border: 1px solid #ddd; /* Light border for definition */
+    border-radius: 8px; /* Rounded corners */
+    max-width: 400px; /* Limit width */
+    margin: 20px auto; /* Center the cart */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack items vertically */
+}
+@media (max-width: 768px) {
+    .ooo {
+        padding: 15px; /* Adjust padding for mobile */
+        max-width: 90%; /* Allow wider space on mobile */
+    }
+}
+.productimage{
+    height: 105px; 
+    width: 105px;
 }
 
     </style>
 </head>
 <body>
-    <h1>Warehouse Product View</h1>
-    <div id="warehouse-container"></div>
+    <header>
+        <img src="logo.png" alt="Zoloww Logo">
+        <h1>Zoloww</h1>
+    </header>
+ 
+    <h3>Warehouse Product View</h3>
 
+    <div id="warehouse-container"></div>
+    <div class="ooo">
     <h2>Your Cart</h2>
     <div id="cart-items"></div>
     <button id="place-order-btn">Place Order</button>
+    </div>
 
     <script type="module">
         // Import Firebase libraries
@@ -215,7 +288,7 @@ button:hover {
 
                         const warehouseTitle = document.createElement('div');
                         warehouseTitle.className = 'warehouse-title';
-                        warehouseTitle.textContent = `Warehouse: ${warehouseName} (Lat: ${latitude}, Long: ${longitude})`;
+                        warehouseTitle.textContent = `Warehouse: ${warehouseName} `;
 
                         warehouseSection.appendChild(warehouseTitle);
 
@@ -227,6 +300,7 @@ button:hover {
                             productCard.className = 'product-card';
 
                             productCard.innerHTML = `
+                                <img src="${productData.imageurl}" class="productimage" >
                                 <div class="product-name">${product}</div>
                                 <div class="product-details">Package Type: ${productData.packageType}</div>
                                 <div class="product-details">Quantity: ${productData.quantity}</div>
