@@ -5,123 +5,201 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
- body {
-    font-family: Arial, sans-serif;
+ * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #ffffff; /* White background */
-    color: #333; /* Dark text color for readability */
 }
 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styling */
 header {
-    background-color: #FFA500; /* Orange header */
-    padding: 20px;
-    text-align: center;
+    background-color: #ff6700;
+    padding: 10px 15px;
+    color: white;
+    display: flex; /* Flex display for horizontal layout */
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 70px;
 }
 
 header img {
-    width: 100px; /* Logo size */
-    height: auto; /* Maintain aspect ratio */
+    height: 40px;
+    margin-right: 10px;
+    display: inline-block; /* Ensures proper alignment */
 }
 
-h1 {
-    margin: 10px 0;
-    color: #fff; /* White text for header */
+header h1 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0;
+    display: inline-block; /* Ensures proper alignment with image */
+    color: white;
 }
 
-h3 {
-    text-align: center;
-}
-
-#warehouse-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-}
-
+/* Warehouse Section */
 .warehouse-section {
-    width: 100%; /* Full width for each warehouse section */
-    margin-bottom: 20px; /* Space between sections */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 20px 0;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
+.warehouse-section:hover {
+    transform: scale(1.02);
+}
+
+.warehouse-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #ff6700;
+}
+
+/* Compact Product Card */
 .product-card {
-    width: 160px; /* Fixed width for product cards */
-    background-color: #ffffff; /* White background for product cards */
-    border: 1px solid #FFA500; /* Orange border */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    margin: 10px;
-    padding: 10px;
-    flex: 0 1 calc(25% - 20px); /* 4 cards per row for larger screens */
-    box-sizing: border-box; /* Include padding and border in width */
-    transition: transform 0.2s; /* Smooth scale on hover */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin: 8px 0;
+    padding: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    transition: box-shadow 0.2s ease;
+    min-width: 150px;
 }
 
 .product-card:hover {
-    transform: scale(1.05); /* Slight zoom on hover */
-}
-
-.productimage {
-    max-width: 150px; /* Responsive image */
-    height: auto; /* Maintain aspect ratio */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .product-name {
-    font-weight: bold;
-    margin: 10px 0;
+    font-size: 1em;
+    font-weight: 600;
+    color: #ff6700;
 }
 
 .product-details {
-    margin: 5px 0;
+    color: #555;
+    font-size: 0.85em;
+    margin-top: 4px;
 }
 
-/* Cart styles */
-.ooo {
-    background-color: #FFA500; /* Orange background for cart */
-    color: #fff; /* White text */
-    padding: 20px;
+/* Cart Container */
+.cart-container {
+    border: 1px solid #ff6700;
     border-radius: 8px;
+    background-color: #fff;
+    padding: 12px;
     margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .cart-item {
-    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
 }
 
-#place-order-btn {
-    background-color: #FF4500; /* Different shade of orange for button */
-    color: #fff; /* White text */
-    padding: 10px 15px;
+/* Order Details */
+#order-details {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+/* Button Styling */
+button {
+    background-color: #ff6700;
+    color: #fff;
     border: none;
     border-radius: 5px;
+    padding: 8px 12px;
     cursor: pointer;
-    transition: background-color 0.2s; /* Smooth transition */
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-#place-order-btn:hover {
-    background-color: #FF6347; /* Lighter shade on hover */
+button:hover {
+    background-color: #e65c00;
+    transform: scale(1.05);
 }
 
-/* Responsive styles */
+button:active {
+    transform: scale(1.02);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+    header {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    header img {
+        margin-bottom: 10px;
+    }
+
+    .warehouse-section {
+        padding: 10px;
+    }
+
     .product-card {
-        flex: 0 1 calc(50% - 20px); /* Two cards per row on medium screens */
+        width: 70px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centers content inside each product card */
+        padding: 8px;
+    }
+
+    #warehouse-container{
+         display: grid;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap; 
+    }
+
+    button {
+        width: 100px;
+        padding: 5px;
     }
 }
-
-@media (max-width: 480px) {
-    .product-card {
-        flex: 0 1 calc(50% - 10px); /* Two cards per row on small screens, slightly smaller */
-        width: 100px; /* Smaller fixed width for mobile */
-    }
-
-    #place-order-btn {
-        width: 100%; /* Full width button */
+.ooo {
+    background-color: #f9f9f9; /* Light background color */
+    padding: 20px; /* Spacing around the content */
+    border: 1px solid #ddd; /* Light border for definition */
+    border-radius: 8px; /* Rounded corners */
+    max-width: 400px; /* Limit width */
+    margin: 20px auto; /* Center the cart */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack items vertically */
+}
+@media (max-width: 768px) {
+    .ooo {
+        padding: 15px; /* Adjust padding for mobile */
+        max-width: 90%; /* Allow wider space on mobile */
     }
 }
-
-    </style>
+.productimage{
+    height: 105px; 
+    width: 105px;
+} make a little flex products should be display   </style>
 </head>
 <body>
     <header>
