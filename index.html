@@ -50,7 +50,8 @@ header h1 {
     margin: 20px auto;
     padding: 0 15px;
     max-width: 1200px;
-    align-content: start;
+    border: 1px solid #ccc; /* Border around the grid */
+    border-radius: 8px; /* Rounded corners */
 }
 
 /* Product Card Styling */
@@ -65,6 +66,7 @@ header h1 {
     align-items: center;
     justify-content: center;
     transition: box-shadow 0.2s ease;
+    position: relative; /* Required for grid line */
 }
 
 .product-card:hover {
