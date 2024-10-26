@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-   /* General Reset */
-* {
+  * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -34,6 +33,7 @@ header {
 header img {
     height: 40px;
     margin-right: 10px;
+    display: inline-block;
 }
 
 header h1 {
@@ -43,35 +43,17 @@ header h1 {
     color: white;
 }
 
-/* Warehouse Section */
-.warehouse-section {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin: 20px 0;
-    padding: 12px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.warehouse-section:hover {
-    transform: scale(1.02);
-}
-
-.warehouse-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #ff6700;
-}
-
 /* Flex Product Container */
 #warehouse-container {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     justify-content: stretch;
-    align-items: stretch; /* Ensures all items have equal height */
+    align-items: stretch;
+    align-content: flex-start; /* Keeps items aligned to the top */
+    margin: 20px auto;
+    padding: 0 15px;
+    max-width: 1200px;
 }
 
 /* Compact Product Card */
@@ -85,7 +67,7 @@ header h1 {
     align-items: center;
     font-size: 0.9em;
     transition: box-shadow 0.2s ease;
-    flex: 1 1 180px; /* Flex-grow to stretch items, with a minimum width */
+    flex: 1 1 180px; /* Flexible and responsive */
     min-height: 200px;
 }
 
@@ -97,7 +79,7 @@ header h1 {
     font-size: 1em;
     font-weight: 600;
     color: #ff6700;
-    margin-bottom: 6px;
+    margin-top: 8px;
     text-align: center;
 }
 
@@ -108,7 +90,6 @@ header h1 {
     text-align: center;
 }
 
-/* Product Image */
 .productimage {
     height: 105px;
     width: 105px;
@@ -162,33 +143,70 @@ button:active {
     transform: scale(1.02);
 }
 
+/* Warehouse Section */
+.warehouse-section {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.warehouse-section:hover {
+    transform: scale(1.02);
+}
+
+.warehouse-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ff6700;
+    margin-bottom: 8px;
+}
+
+/* Cart Summary Box */
+.ooo {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 20px auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    header img {
+        margin-bottom: 10px;
     }
 
     .warehouse-section {
         padding: 10px;
     }
 
-    #warehouse-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
     .product-card {
-        width: 100%;
-        max-width: 120px;
-        margin: auto;
+        flex: 1 1 100px; /* Smaller width on mobile */
         padding: 8px;
     }
 
+    #warehouse-container {
+        display: grid;
+        justify-content: center;
+        align-content: flex-start;
+        gap: 10px;
+    }
+
     button {
-        width: 100%;
+        width: 100px;
         padding: 5px;
     }
 
@@ -197,6 +215,7 @@ button:active {
         max-width: 90%;
     }
 }
+
 
 
     </style>
