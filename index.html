@@ -46,14 +46,14 @@ h3 {
 }
 
 .product-card {
-    width:160;
+    width: 160px; /* Fixed width for product cards */
     background-color: #ffffff; /* White background for product cards */
     border: 1px solid #FFA500; /* Orange border */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     margin: 10px;
     padding: 10px;
-    flex: 0 1 calc(50% - 20px); /* Responsive 2x2 layout */
+    flex: 0 1 calc(25% - 20px); /* 4 cards per row for larger screens */
     box-sizing: border-box; /* Include padding and border in width */
     transition: transform 0.2s; /* Smooth scale on hover */
 }
@@ -106,13 +106,14 @@ h3 {
 /* Responsive styles */
 @media (max-width: 768px) {
     .product-card {
-        flex: 0 1 calc(50% - 20px); /* Two cards per row */
+        flex: 0 1 calc(50% - 20px); /* Two cards per row on medium screens */
     }
 }
 
 @media (max-width: 480px) {
     .product-card {
-        flex: 0 1 100%; /* Full width on small screens */
+        flex: 0 1 calc(50% - 10px); /* Two cards per row on small screens, slightly smaller */
+        width: 100px; /* Smaller fixed width for mobile */
     }
 
     #place-order-btn {
