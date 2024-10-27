@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
- /* General Styling */
+/* General Styling */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -66,7 +66,7 @@ header h1 {
     border-radius: 6px;
     background-color: #f9f9f9;
     padding: 15px;
-    width: 150px;
+    width: 180px; /* Default width for desktop view */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -128,15 +128,16 @@ button:active {
 /* Responsive Design */
 @media (max-width: 768px) {
     .product-card {
-        width: 45%; /* Adjust width to fit two columns on smaller screens */
+        width: 45%; /* Two cards per row for medium screens */
     }
 }
 
 @media (max-width: 480px) {
     .product-card {
-        width: 90%; /* Full width on very small screens */
+        width: 48%; /* Two cards per row for small screens (close to 50% for equal spacing) */
     }
 }
+
 </style>
 </head>
 <body>
