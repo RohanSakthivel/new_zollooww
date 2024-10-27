@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
- * {
+ /* General Styling */
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -23,7 +24,7 @@ header {
     background-color: #ff6700;
     padding: 10px 15px;
     color: white;
-    display: flex; /* Flex display for horizontal layout */
+    display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -33,14 +34,12 @@ header {
 header img {
     height: 40px;
     margin-right: 10px;
-    display: inline-block; /* Ensures proper alignment */
 }
 
 header h1 {
     font-size: 1.5em;
     font-weight: 600;
     margin: 0;
-    display: inline-block; /* Ensures proper alignment with image */
     color: white;
 }
 
@@ -48,82 +47,62 @@ header h1 {
 .warehouse-section {
     border: 1px solid #ccc;
     border-radius: 8px;
-    margin: 20px 0;
+    margin: 20px;
     padding: 12px;
     background: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
 }
 
-.warehouse-section:hover {
-    transform: scale(1.02);
+/* Product Grid Styling */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
 }
 
-.warehouse-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #ff6700;
-}
-
-/* Compact Product Card */
 .product-card {
     border: 1px solid #ddd;
     border-radius: 6px;
-    margin: 8px 0;
-    padding: 5px;
     background-color: #f9f9f9;
+    padding: 15px;
+    width: 150px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    font-size: 0.9em;
     transition: box-shadow 0.2s ease;
-    min-width: 150px;
 }
 
 .product-card:hover {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
+.product-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
 .product-name {
     font-size: 1em;
     font-weight: 600;
     color: #ff6700;
+    margin-top: 8px;
 }
 
 .product-details {
     color: #555;
     font-size: 0.85em;
     margin-top: 4px;
+    text-align: center;
 }
 
-/* Cart Container */
-.cart-container {
-    border: 1px solid #ff6700;
-    border-radius: 8px;
-    background-color: #fff;
-    padding: 12px;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.product-price {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 8px;
 }
 
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 8px 0;
-}
-
-/* Order Details */
-#order-details {
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #fff;
-}
-
-/* Button Styling */
 button {
     background-color: #ff6700;
     color: #fff;
@@ -132,7 +111,9 @@ button {
     padding: 8px 12px;
     cursor: pointer;
     font-size: 0.9em;
+    margin-top: 10px;
     transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 100%;
 }
 
 button:hover {
@@ -146,60 +127,17 @@ button:active {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    header {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-
-    header img {
-        margin-bottom: 10px;
-    }
-
-    .warehouse-section {
-        padding: 10px;
-    }
-
     .product-card {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Centers content inside each product card */
-        padding: 8px;
+        width: 45%; /* Adjust width to fit two columns on smaller screens */
     }
+}
 
-    #warehouse-container{
-         display: grid;
-         justify-content: center;
-         align-items: center;
-         flex-wrap: wrap; 
-    }
-
-    button {
-        width: 100px;
-        padding: 5px;
+@media (max-width: 480px) {
+    .product-card {
+        width: 90%; /* Full width on very small screens */
     }
 }
-.ooo {
-    background-color: #f9f9f9; /* Light background color */
-    padding: 20px; /* Spacing around the content */
-    border: 1px solid #ddd; /* Light border for definition */
-    border-radius: 8px; /* Rounded corners */
-    max-width: 400px; /* Limit width */
-    margin: 20px auto; /* Center the cart */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    display: flex; /* Enable flexbox */
-    flex-direction: column; /* Stack items vertically */
-}
-@media (max-width: 768px) {
-    .ooo {
-        padding: 15px; /* Adjust padding for mobile */
-        max-width: 90%; /* Allow wider space on mobile */
-    }
-}
-.productimage{
-    height: 305px; 
-    width: 305px;
-} make a little flex products should be display   </style>
+</style>
 </head>
 <body>
     <header>
