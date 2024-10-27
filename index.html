@@ -139,7 +139,6 @@ button:active {
     }
 }
 /* Product Container Styling */
-.product-container {
 /* Product Container Styling */
 .product-container {
     display: grid;
@@ -156,12 +155,7 @@ button:active {
 
 @media (max-width: 480px) {
     .product-container {
-        grid-template-columns: 1fr 1fr; /* Two products per column on mobile */
-    }
-
-    /* Center the items in two columns */
-    .product-card {
-        width: 100%; /* Ensure the product card takes full width of each column */
+        grid-template-columns: repeat(2, 1fr); /* Two products per row on mobile */
     }
 }
 
