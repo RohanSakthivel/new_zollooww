@@ -142,22 +142,30 @@ button:active {
 .product-container {
     display: grid;
     gap: 15px;
-    grid-template-columns: repeat(4, 1fr); /* Default: four products per row */
+    grid-template-columns: repeat(4, 1fr); /* Default: four products per row on desktop */
     margin-top: 15px;
 }
 
 @media (max-width: 768px) {
     .product-container {
-        grid-template-columns: repeat(2, 1fr); /* Two products per row on medium screens */
+        grid-template-columns: repeat(2, 1fr); /* Two products per row on tablets */
     }
 }
 
 @media (max-width: 480px) {
     .product-container {
-        grid-template-columns: repeat(2, 1fr); /* Two products per row on small screens */
+        grid-template-columns: 1fr; /* One product per row on mobile */
+    }
+
+    /* Arrange two products per column on mobile */
+    .product-card:nth-child(odd) {
+        grid-row: auto;
+    }
+
+    .product-card:nth-child(even) {
+        grid-row: auto;
     }
 }
-
 
     
    </style>
