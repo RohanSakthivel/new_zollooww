@@ -5,139 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-  
+  /* Reset and Base Styling */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Header Styling */
-header {
-    background-color: #ff6700;
-    padding: 10px 15px;
-    color: white;
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 70px;
+    min-height: 100vh;
+    background-color: #f0f2f5;
 }
 
-header img {
-    height: 40px;
-    margin-right: 10px;
-}
-
-header h1 {
-    font-size: 1.5em;
-    font-weight: 600;
-    margin: 0;
-}
-
-/* Warehouse Section */
-.warehouse-section {
-    display: flex;
-    flex-wrap: wrap;
+/* Container Styling */
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Always two columns */
     gap: 20px;
     width: 90%;
     max-width: 800px;
     margin: 20px auto;
-    justify-content: center;
 }
 
 /* Product Card Styling */
 .product-card {
-    flex: 0 1 calc(50% - 20px); /* Two cards per row */
-    max-width: calc(50% - 20px);
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #f9f9f9;
+    background: #fff;
     padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: box-shadow 0.2s ease;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .product-card:hover {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .product-card img {
     width: 100%;
     height: auto;
-    border-radius: 4px;
+    border-radius: 8px;
+    transition: transform 0.3s;
 }
 
-.product-name {
-    font-size: 1em;
-    font-weight: 600;
-    color: #ff6700;
-    margin-top: 8px;
-}
-
-.product-details {
-    color: #555;
-    font-size: 0.85em;
-    margin-top: 4px;
-    text-align: center;
-}
-
-.product-price {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-/* Button Styling */
-button {
-    background-color: #ff6700;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 0.9em;
-    margin-top: 10px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    width: 100%;
-}
-
-button:hover {
-    background-color: #e65c00;
+.product-card:hover img {
     transform: scale(1.05);
 }
 
-button:active {
-    transform: scale(1.02);
+.product-card h3 {
+    font-size: 1.1em;
+    margin: 10px 0;
+    color: #333;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+.product-card p {
+    font-size: 1em;
+    color: #666;
+    margin: 10px 0;
+}
+
+/* Button Styling */
+.product-card button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 0.9em;
+}
+
+.product-card button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Responsive Adjustments for Smaller Screens */
+@media (max-width: 600px) {
+    .container {
+        grid-template-columns: repeat(2, 1fr); /* Ensure two columns on small screens */
+        gap: 10px; /* Adjust gap for smaller screens */
+    }
+
     .product-card {
-        flex: 0 1 100%; /* One card per row on smaller screens */
-        max-width: 100%;
+        padding: 10px;
+    }
+
+    .product-card h3, .product-card p, .product-card button {
+        font-size: 0.85em;
     }
 }
-
-/* Warehouse Title Styling */
-.warehouse-title {
-    width: 100%;
-    text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-}
-
 
    </style>
 </head>
