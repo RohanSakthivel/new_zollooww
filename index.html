@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-       
-       /* General Styling */
+   /* General Styling */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -41,7 +40,6 @@ header h1 {
     font-size: 1.5em;
     font-weight: 600;
     margin: 0;
-    color: white;
 }
 
 /* Warehouse Section */
@@ -54,15 +52,12 @@ header h1 {
     margin: 20px auto;
 }
 
-/* Product Grid Styling */
-
-
+/* Product Card Styling */
 .product-card {
     border: 1px solid #ddd;
     border-radius: 6px;
     background-color: #f9f9f9;
     padding: 15px;
-    width: 180px; /* Default width for desktop view */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -99,6 +94,7 @@ header h1 {
     margin-top: 8px;
 }
 
+/* Button Styling */
 button {
     background-color: #ff6700;
     color: #fff;
@@ -130,25 +126,30 @@ button:active {
 
 @media (max-width: 480px) {
     .product-card {
-        width: 48%; /* Two cards per row for small screens (close to 50% for equal spacing) */
+        width: 48%; /* Two cards per row for small screens */
     }
 }
+
 /* Product Container Styling */
 .product-container {
     display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 90%;
-            max-width: 800px;
-            margin: 20px auto;
+    grid-template-columns: repeat(2, 1fr); /* Two products per row */
+    gap: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
 }
-.warehouse-title{
+
+/* Warehouse Title Styling */
+.warehouse-title {
     width: 100%;
+    text-align: center; /* Center title text */
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
 }
 
-
-
-    
    </style>
 </head>
 <body>
