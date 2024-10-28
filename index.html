@@ -141,7 +141,7 @@ button:active {
 /* Product Container Styling */
 /* Product Container Styling */
 .product-container {
-    display: flex;
+    display: grid; /* Switch to grid layout */
     gap: 15px;
     grid-template-columns: repeat(4, 1fr); /* Default: four products per row */
     margin-top: 15px;
@@ -152,6 +152,13 @@ button:active {
         grid-template-columns: repeat(2, 1fr); /* Two products per row on tablets and mobile */
     }
 }
+
+@media (max-width: 480px) {
+    .product-container {
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+}
+
 
     
    </style>
