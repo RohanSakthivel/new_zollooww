@@ -46,21 +46,16 @@ header h1 {
 
 /* Warehouse Section */
 .warehouse-section {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin: 20px;
-    padding: 5px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
 }
 
 /* Product Grid Styling */
-.product-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
+
 
 .product-card {
     border: 1px solid #ddd;
