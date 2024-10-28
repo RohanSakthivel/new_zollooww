@@ -5,98 +5,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-   * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+       
+       /* General Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
 
-        .container {
-            display: grid;
+/* Header Styling */
+header {
+    background-color: #ff6700;
+    padding: 10px 15px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 70px;
+}
+
+header img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+header h1 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+/* Warehouse Section */
+.warehouse-section {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 20px;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Grid Styling */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    width: 180px; /* Default width for desktop view */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.product-name {
+    font-size: 1em;
+    font-weight: 600;
+    color: #ff6700;
+    margin-top: 8px;
+}
+
+.product-details {
+    color: #555;
+    font-size: 0.85em;
+    margin-top: 4px;
+    text-align: center;
+}
+
+.product-price {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+button {
+    background-color: #ff6700;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #e65c00;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(1.02);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-card {
+        width: 45%; /* Two cards per row for medium screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 48%; /* Two cards per row for small screens (close to 50% for equal spacing) */
+    }
+}
+/* Product Container Styling */
+.product-container {
+    display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             width: 90%;
             max-width: 800px;
             margin: 20px auto;
-        }
+}
 
-        .product-card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        }
 
-        .product-card img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            transition: transform 0.3s;
-        }
-
-        .product-card:hover img {
-            transform: scale(1.05);
-        }
-
-        .product-card h3 {
-            font-size: 1.1em;
-            margin: 10px 0;
-            color: #333;
-        }
-
-        .product-card p {
-            font-size: 1em;
-            color: #666;
-            margin: 10px 0;
-        }
-
-        .product-card button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            font-size: 0.9em;
-        }
-
-        .product-card button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-        /* Responsive adjustments for smaller screens */
-        @media (max-width: 600px) {
-            .container {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .product-card {
-                padding: 10px;
-            }
-
-            .product-card h3, .product-card p, .product-card button {
-                font-size: 0.85em;
-            }
-        }
     
    </style>
 </head>
@@ -108,7 +161,7 @@
  
     <h3>Warehouse Product View</h3>
 
-    <div class="container" id="warehouse-container"></div>
+    <div id="warehouse-container"></div>
     <div class="ooo">
     <h2>Your Cart</h2>
     <div id="cart-items"></div>
