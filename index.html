@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-   /* General Styling */
+  /* General Styling */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -45,7 +45,7 @@ header h1 {
 /* Warehouse Section */
 .warehouse-section {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
     gap: 20px;
     width: 90%;
     max-width: 800px;
@@ -119,36 +119,27 @@ button:active {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .product-card {
-        width: 45%; /* Two cards per row for medium screens */
+    .warehouse-section {
+        grid-template-columns: 1fr 1fr; /* Two cards per row for medium screens */
     }
 }
 
 @media (max-width: 480px) {
-    .product-card {
-        width: 48%; /* Two cards per row for small screens */
+    .warehouse-section {
+        grid-template-columns: 1fr; /* One card per row on small screens */
     }
-}
-
-/* Product Container Styling */
-.product-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two products per row */
-    gap: 20px;
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
 }
 
 /* Warehouse Title Styling */
 .warehouse-title {
     width: 100%;
-    text-align: center; /* Center title text */
+    text-align: center;
     font-size: 1.5em;
     font-weight: bold;
     color: #333;
     margin-bottom: 15px;
 }
+
 
    </style>
 </head>
