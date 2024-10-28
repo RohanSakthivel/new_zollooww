@@ -5,113 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-     /* General styling for header and layout */
-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-}
+   * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-header img {
-    height: 50px;
-    width: 50px;
-}
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+        }
 
-h3, h2 {
-    text-align: center;
-}
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
 
-#warehouse-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    padding: 20px;
-}
+        .product-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
 
-/* Style each product card */
-.product-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-around;
-}
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
 
-.product-card {
-    width: calc(50% - 20px); /* Two columns layout with some spacing */
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
 
-.product-card img {
-    width: 100%;
-    height: auto;
-    max-width: 150px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
 
-/* Add-to-cart button style */
-.add-to-cart-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
-}
+        .product-card h3 {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #333;
+        }
 
-.add-to-cart-btn:hover {
-    background-color: #45a049;
-}
+        .product-card p {
+            font-size: 1em;
+            color: #666;
+            margin: 10px 0;
+        }
 
-/* Cart section */
-.ooo {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f2f2f2;
-    text-align: center;
-}
+        .product-card button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            font-size: 0.9em;
+        }
 
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-}
+        .product-card button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
 
-.remove-btn {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    cursor: pointer;
-    border-radius: 3px;
-}
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
 
-.remove-btn:hover {
-    background-color: #d32f2f;
-}
+            .product-card {
+                padding: 10px;
+            }
 
-/* Responsive styling for smaller screens */
-@media (max-width: 600px) {
-    .product-card {
-        width: 100%; /* Single column on smaller screens */
-    }
-}
-
+            .product-card h3, .product-card p, .product-card button {
+                font-size: 0.85em;
+            }
+        }
     
    </style>
 </head>
