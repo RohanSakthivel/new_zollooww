@@ -5,178 +5,213 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Product View and Order Placement</title>
     <style>
-       
-       /* General Styling */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        /* General Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
 
-/* Header Styling */
-header {
-    background-color: #ff6700;
-    padding: 10px 15px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 70px;
-}
+        /* Header Styling */
+        header {
+            background-color: #ff6700;
+            padding: 10px 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 70px;
+            position: relative;
+        }
 
-header img {
-    height: 40px;
-    margin-right: 10px;
-}
+        header img {
+            height: 40px;
+            margin-right: 10px;
+        }
 
-header h1 {
-    font-size: 1.5em;
-    font-weight: 600;
-    margin: 0;
-    color: white;
-}
+        header h1 {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 0;
+            color: white;
+        }
 
-/* Warehouse Section */
-.warehouse-section {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin: 20px;
-    padding: 12px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .nav-btn {
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+            position: relative;
+            z-index: 10;
+            margin-left: auto;
+        }
 
-/* Product Grid Styling */
-.product-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
+        /* Sidebar Style */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            z-index: 9;
+        }
 
-.product-card {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-    padding: 15px;
-    width: 180px; /* Default width for desktop view */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: box-shadow 0.2s ease;
-}
+        .sidebar h2 {
+            color: white;
+            margin: 0 0 20px;
+            padding: 0 25px;
+        }
 
-.product-card:hover {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-}
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 22px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
 
-.product-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-}
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
 
-.product-name {
-    font-size: 1em;
-    font-weight: 600;
-    color: #ff6700;
-    margin-top: 8px;
-}
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 36px;
+            color: white;
+            cursor: pointer;
+        }
 
-.product-details {
-    color: #555;
-    font-size: 0.85em;
-    margin-top: 4px;
-    text-align: center;
-}
+        /* Content Styling */
+        .warehouse-section {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin: 20px;
+            padding: 12px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-.product-price {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-top: 8px;
-}
+        /* Product Card */
+        .product-card {
+            /* Styles for product card */
+        }
 
-button {
-    background-color: #ff6700;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 0.9em;
-    margin-top: 10px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    width: 100%;
-}
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-card {
+                width: 45%;
+            }
+        }
 
-button:hover {
-    background-color: #e65c00;
-    transform: scale(1.05);
-}
-
-button:active {
-    transform: scale(1.02);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .product-card {
-        width: 45%; /* Two cards per row for medium screens */
-    }
-}
-
-@media (max-width: 480px) {
-    .product-card {
-        width: 48%; /* Two cards per row for small screens (close to 50% for equal spacing) */
-    }
-}
-/* Product Container Styling */
-.product-container {
-    display: grid;
-    gap: 15px;
-    grid-template-columns: repeat(4, 1fr); /* Default: four products per row */
-    margin-top: 15px;
-}
-
-@media (max-width: 768px) {
-    .product-container {
-        grid-template-columns: repeat(2, 1fr); /* Two products per row on medium screens */
-    }
-}
-
-@media (max-width: 480px) {
-    .product-container {
-        grid-template-columns: repeat(2, 1fr); /* Two products per row on small screens */
-    }
-}
-
-
-    
-   </style>
+        @media (max-width: 480px) {
+            .product-card {
+                width: 48%;
+            }
+        }
+        .display {
+            font-size: 1.em;
+            margin-bottom: 15px;
+        }
+        .slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .level {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .level:hover {
+            opacity: 1;
+        }
+        .level::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #ff6700;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .level::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: #ff6700;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .distancei-icon {
+            width: 24px;
+            height: 24px;
+            fill: #ff6700;
+        }
+    </style>
 </head>
 <body>
     <header>
         <img src="logo.png" alt="Zoloww Logo">
         <h1>Zoloww</h1>
+        <div class="nav-btn" onclick="toggleSidebar()">
+            ☰
+        </div>
     </header>
- 
-    <h3>Warehouse Product View</h3>
-
-    <div id="warehouse-container"></div>
-    <div class="ooo">
-    <h2>Your Cart</h2>
-    <div id="cart-items"></div>
-    <button id="place-order-btn">Place Order</button>
+    
+    <div id="sidebar" class="sidebar">
+        <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <button id="place-order-btn">Place Order</button>
     </div>
+    <div class="container">
+        <h5>Distancei and Amount Calculator</h5>
+        <div class="display">
+            Distancei: <span id="distancei">1</span> km<br>
+            Amount: <span id="amount">15</span> Rs
+        </div>
+        <label class="slider">
+            <input type="range" class="level" min="0.5" max="5" step="0.5" value="1" oninput="updateValues(this.value)">
+            <!-- Distancei icon SVG -->
+            <svg class="distancei-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.86-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+        </label>
+    </div>
+    <h3>Warehouse Product View</h3>
+    <div id="warehouse-container"></div>
 
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
+        }
+    </script>
+    <script>
+        const ratePerKm = 15; // Rs per kilometer
+
+        function updateValues(distancei) {
+            document.getElementById('distancei').textContent = parseFloat(distancei).toFixed(1);
+            document.getElementById('amount').textContent = (distancei * ratePerKm).toFixed(2);
+        }
+    </script>
     <script type="module">
         // Import Firebase libraries
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -243,7 +278,7 @@ button:active {
                     // Calculate distance from user location to warehouse
                     const distance = calculateDistance(userLocation.lat, userLocation.lon, latitude, longitude);
 
-                    if (distance <= 4) { // If within 4 km
+                    if (distance <= distancei) { // If within 4 km
                         warehousesAvailable = true;
 
                         const warehouseSection = document.createElement('div');
@@ -412,5 +447,8 @@ button:active {
             }
         });
     </script>
+
+    
+
 </body>
 </html>
