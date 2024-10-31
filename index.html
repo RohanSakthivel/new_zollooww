@@ -122,48 +122,6 @@
                 width: 48%;
             }
         }
-        .display {
-            font-size: 1.em;
-            margin-bottom: 15px;
-        }
-        .slider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .level {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 5px;
-            background: #ddd;
-            outline: none;
-            opacity: 0.7;
-            transition: opacity .2s;
-        }
-        .level:hover {
-            opacity: 1;
-        }
-        .level::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 15px;
-            height: 15px;
-            background: #ff6700;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        .level::-moz-range-thumb {
-            width: 15px;
-            height: 15px;
-            background: #ff6700;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        .distancei-icon {
-            width: 24px;
-            height: 24px;
-            fill: #ff6700;
-        }
     </style>
 </head>
 <body>
@@ -181,20 +139,7 @@
         <div id="cart-items"></div>
         <button id="place-order-btn">Place Order</button>
     </div>
-    <div class="container">
-        <h5>Distancei and Amount Calculator</h5>
-        <div class="display">
-            Distancei: <span id="distancei">1</span> km<br>
-            Amount: <span id="amount">15</span> Rs
-        </div>
-        <label class="slider">
-            <input type="range" class="level" min="0.5" max="5" step="0.5" value="1" oninput="updateValues(this.value)">
-            <!-- Distancei icon SVG -->
-            <svg class="distancei-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.86-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-        </label>
-    </div>
+    
     <h3>Warehouse Product View</h3>
     <div id="warehouse-container"></div>
 
@@ -202,14 +147,6 @@
         function toggleSidebar() {
             const sidebar = document.getElementById("sidebar");
             sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
-        }
-    </script>
-    <script>
-        const ratePerKm = 15; // Rs per kilometer
-
-        function updateValues(distancei) {
-            document.getElementById('distancei').textContent = parseFloat(distancei).toFixed(1);
-            document.getElementById('amount').textContent = (distancei * ratePerKm).toFixed(2);
         }
     </script>
     <script type="module">
@@ -278,7 +215,7 @@
                     // Calculate distance from user location to warehouse
                     const distance = calculateDistance(userLocation.lat, userLocation.lon, latitude, longitude);
 
-                    if (distance <= distancei) { // If within 4 km
+                    if (distance <= 4) { // If within 4 km
                         warehousesAvailable = true;
 
                         const warehouseSection = document.createElement('div');
@@ -447,8 +384,6 @@
             }
         });
     </script>
-
-    
 
 </body>
 </html>
