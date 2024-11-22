@@ -1,354 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Product View and Order Placement</title>
-    <style>
-        /* General Styling */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        /* Header Styling */
-        header {
-            background-color: #ff6700;
-            padding: 10px 15px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            height: 70px;
-        }
-
-        header img {
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        header h1 {
-            font-size: 1.5em;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .nav-btn {
-            font-size: 30px;
-            cursor: pointer;
-            color: white;
-            margin-left: auto;
-        }
-
-        /* Sidebar Style */
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            top: 0;
-            right: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-            z-index: 9;
-        }
-
-        .sidebar h2 {
-            color: white;
-            margin: 0 0 20px;
-            padding: 0 25px;
-        }
-
-        .sidebar a {
-            padding: 15px 25px;
-            text-decoration: none;
-            font-size: 22px;
-            color: white;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar a:hover {
-            color: #f1f1f1;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 36px;
-            color: white;
-            cursor: pointer;
-        }
-
-        /* Content Styling */
-        .warehouse-section {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin: 20px;
-            padding: 12px;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .product-card {
-                width: 45%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .product-card {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+    }
+    #qr-reader {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+    footer {
+      margin-top: 30px;
+      padding: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="Zoloww Logo">
-        <h1>Zoloww</h1>
-        <div class="nav-btn" onclick="toggleSidebar()">☰</div>
-    </header>
-    
-    <div id="sidebar" class="sidebar">
-        <span class="close-btn" onclick="toggleSidebar()">&times;</span>
-        <h2>Your Cart</h2>
-        <div id="cart-items"></div>
-        <button id="place-order-btn">Place Order</button>
-        <div class="address">
-            <input type="text" id="username" placeholder="Enter your name">
-            <input type="text" id="mobile" placeholder="Enter your mobile number">
-            <input type="email" id="email" placeholder="Enter your email address">
-            <h5>Only you can provide the current location address</h5>
-            <input type="text" id="address" placeholder="Enter your address">
-            <input type="text" id="pincode" placeholder="Enter the pincode">
-            <button onclick="getUserDetails()">Order</button>
-        </div>
-    </div>
-    
-    <h3>Warehouse Product View</h3>
-    <div id="warehouse-container"></div>
+  <header>
+    <h1>QR Code Scanner</h1>
+  </header>
+  <div id="qr-reader"></div>
+  <div id="message">Waiting to scan...</div>
+  <footer>&copy; 2024 QR Scanner App. Built for convenience.</footer>
 
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
+  <script>
+    // Initialize the QR Code scanner
+    const qrCodeReader = new Html5Qrcode("qr-reader");
+
+    function startCamera() {
+      // Start the QR code scanner
+      qrCodeReader.start(
+        { facingMode: "environment" }, // Use the back camera if available
+        {
+          fps: 10, // Frames per second
+          qrbox: { width: 250, height: 250 }, // Scanning area
+        },
+        (decodedText, decodedResult) => {
+          // Handle successful scan
+          console.log(`Scanned text: ${decodedText}`);
+          document.getElementById("message").textContent = `Scanned: ${decodedText}`;
+
+          // Stop scanning after successful scan
+          qrCodeReader.stop();
+        },
+        (error) => {
+          // Handle scanning errors
+          console.warn(`Scan failed: ${error}`);
         }
-    </script>
-    
-    <script type="module">
-        // Import Firebase libraries
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      ).catch((err) => {
+        console.error("Camera start failed:", err);
+      });
+    }
 
-        // Firebase configuration
-        const firebaseConfigProducts = {
-            apiKey: "AIzaSyCAZvPR5SJ-GGfX8A4PZHZN8uQnu1SPBrI",
-            authDomain: "zoloww-2603e.firebaseapp.com",
-            projectId: "zoloww-2603e",
-            storageBucket: "zoloww-2603e.appspot.com",
-            messagingSenderId: "160528827172",
-            appId: "1:160528827172:web:07a67d55c46162ab3ea9b1",
-            measurementId: "G-HZDMTV126S"
-        };
-
-        const firebaseConfigOrders = {
-            apiKey: "AIzaSyD4_h-2b2_IjrfvSKOxHrL9gWotG-SanFo",
-            authDomain: "zolowworder.firebaseapp.com",
-            projectId: "zolowworder",
-            storageBucket: "zolowworder.appspot.com",
-            messagingSenderId: "996982358637",
-            appId: "1:996982358637:web:1adcf03392a68d5c6f3564",
-            measurementId: "G-4L2GTKRRMF"
-        };
-
-        // Initialize Firebase apps
-        const appProducts = initializeApp(firebaseConfigProducts, "products");
-        const appOrders = initializeApp(firebaseConfigOrders, "orders");
-
-        // Initialize Firestore instances
-        const dbProducts = getFirestore(appProducts);
-        const dbOrders = getFirestore(appOrders);
-
-        let cart = [];
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            const warehouseContainer = document.getElementById('warehouse-container');
-            const cartContainer = document.getElementById('cart-items');
-            const placeOrderBtn = document.getElementById('place-order-btn');
-
-            const loadingMessage = document.createElement('div');
-            loadingMessage.textContent = 'Loading products...';
-            warehouseContainer.appendChild(loadingMessage);
-
-            const userLocation = await getUserLocation();
-
-            try {
-                // Fetch warehouse data from Firestore for products
-                const warehousesSnapshot = await getDocs(collection(dbProducts, 'warehouses'));
-                loadingMessage.remove(); // Remove loading message after data is fetched
-
-                let warehousesAvailable = false;
-
-                // Loop through each warehouse
-                warehousesSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const warehouseName = data.warehouseName;
-                    const latitude = data.latitude;
-                    const longitude = data.longitude;
-                    const products = data.products;
-
-                    // Calculate distance from user location to warehouse
-                    const distance = calculateDistance(userLocation.lat, userLocation.lon, latitude, longitude);
-
-                    if (distance <= 4) { // If within 4 km
-                        warehousesAvailable = true;
-
-                        const warehouseSection = document.createElement('div');
-                        warehouseSection.className = 'warehouse-section';
-
-                        const warehouseTitle = document.createElement('div');
-                        warehouseTitle.className = 'warehouse-title';
-                        warehouseTitle.textContent = `Warehouse: ${warehouseName}`;
-                        warehouseSection.appendChild(warehouseTitle);
-
-                        const productContainer = document.createElement('div');
-                        productContainer.className = 'product-container';
-
-                        // Loop through each product in the warehouse
-                        for (let product in products) {
-                            const productData = products[product];
-                            const productCard = document.createElement('div');
-                            productCard.className = 'product-card';
-                            productCard.innerHTML = `
-                                <img src="${productData.imageurl}" class="productimage" alt="${product}">
-                                <div class="product-name">${product}</div>
-                                <div class="product-details">Package Type: ${productData.packageType}</div>
-                                <div class="product-details">Quantity: ${productData.quantity}</div>
-                                <div class="product-details">Price: ₹${productData.price}</div>
-                                <button class="add-to-cart-btn">Add to Cart</button>
-                            `;
-
-                            const addToCartBtn = productCard.querySelector('.add-to-cart-btn');
-                            addToCartBtn.addEventListener('click', () => {
-                                addToCart({
-                                    warehouseName,
-                                    product,
-                                    packageType: productData.packageType,
-                                    quantity: productData.quantity,
-                                    price: productData.price
-                                });
-                            });
-
-                            productContainer.appendChild(productCard);
-                        }
-                        warehouseSection.appendChild(productContainer);
-                        warehouseContainer.appendChild(warehouseSection);
-                    }
-                });
-
-                // If no warehouses are available within 4 km
-                if (!warehousesAvailable) {
-                    const noWarehouseMessage = document.createElement('div');
-                    noWarehouseMessage.textContent = "No warehouses available within 4 km.";
-                    warehouseContainer.appendChild(noWarehouseMessage);
-                }
-            } catch (error) {
-                console.error("Error fetching warehouse data: ", error);
-                loadingMessage.textContent = 'Error loading products. Please try again later.';
-            }
-        });
-
-        function addToCart(product) {
-            cart.push(product);
-            updateCartDisplay();
-        }
-
-        function updateCartDisplay() {
-            const cartContainer = document.getElementById('cart-items');
-            cartContainer.innerHTML = ''; // Clear existing cart items
-            cart.forEach(item => {
-                const cartItem = document.createElement('div');
-                cartItem.textContent = `${item.product} - ₹${item.price}`;
-                cartContainer.appendChild(cartItem);
-            });
-            document.getElementById('place-order-btn').disabled = cart.length === 0;
-        }
-
-        async function placeOrder() {
-            const orderDetails = {
-                items: cart,
-                customerDetails: {
-                    username: document.getElementById('username').value,
-                    mobile: document.getElementById('mobile').value,
-                    email: document.getElementById('email').value,
-                    address: document.getElementById('address').value,
-                    pincode: document.getElementById('pincode').value
-                }
-            };
-
-            try {
-                await addDoc(collection(dbOrders, "orders"), orderDetails);
-                alert("Order placed successfully!");
-                cart = [];
-                updateCartDisplay();
-                clearInputFields();
-            } catch (error) {
-                console.error("Error placing order: ", error);
-                alert("Error placing order. Please try again later.");
-            }
-        }
-
-        function clearInputFields() {
-            document.getElementById('username').value = '';
-            document.getElementById('mobile').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('address').value = '';
-            document.getElementById('pincode').value = '';
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius of the Earth in km
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Distance in km
-        }
-
-        async function getUserLocation() {
-            // Use Geolocation API to get user's location
-            return new Promise((resolve, reject) => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        resolve({
-                            lat: position.coords.latitude,
-                            lon: position.coords.longitude
-                        });
-                    }, () => {
-                        reject('Unable to retrieve location.');
-                    });
-                } else {
-                    reject('Geolocation not supported.');
-                }
-            });
-        }
-
-        document.getElementById('place-order-btn').addEventListener('click', placeOrder);
-    </script>
+    // Request camera access on page load
+    window.onload = () => {
+      startCamera();
+    };
+  </script>
 </body>
 </html>
