@@ -1,81 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner</title>
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 20px;
-    }
-    #qr-reader {
-      width: 100%;
-      max-width: 400px;
-      margin: 20px auto;
-    }
-    #message {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #333;
-    }
-    footer {
-      margin-top: 30px;
-      padding: 10px;
-      font-size: 14px;
-      color: #555;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Zoloww</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>QR Code Scanner</h1>
-  </header>
-  <div id="qr-reader"></div>
-  <div id="message">Waiting to scan...</div>
-  <footer>&copy; 2024 QR Scanner App. Built for convenience.</footer>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-title">
+                <img src="logo.png" alt="Zoloww Logo">
+                <h1>Zoloww</h1>
+            </div>
+        </nav>
+    </header>
 
-  <script>
-    // Initialize the QR Code scanner
-    const qrCodeReader = new Html5Qrcode("qr-reader");
+    <main>
+        <section id="loginSection">
+            <h2>Delivery Hero Login</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <p>Not registered? <a href="registration.html">Register here</a>.</p>
+            </form>
+        </section>
+    </main>
 
-    function startCamera() {
-      // Start the QR code scanner
-      qrCodeReader.start(
-        { facingMode: "environment" }, // Use the back camera if available
-        {
-          fps: 10, // Frames per second
-          qrbox: { width: 250, height: 250 }, // Scanning area
-        },
-        (decodedText, decodedResult) => {
-          // Handle successful scan
-          console.log(`Scanned text: ${decodedText}`);
-          document.getElementById("message").textContent = `Scanned: ${decodedText}`;
+    <footer>
+        <p>&copy; 2024 Zoloww. All Rights Reserved.</p>
+    </footer>
 
-          // Stop scanning after successful scan
-          qrCodeReader.stop();
-        },
-        (error) => {
-          // Handle scanning errors
-          console.warn(`Scan failed: ${error}`);
-        }
-      ).catch((err) => {
-        console.error("Camera start failed:", err);
-      });
-    }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Request camera access on page load
-    window.onload = () => {
-      startCamera();
-    };
-  </script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4_h-2b2_IjrfvSKOxHrL9gWotG-SanFo",
+            authDomain: "zolowworder.firebaseapp.com",
+            projectId: "zolowworder",
+            storageBucket: "zolowworder.appspot.com",
+            messagingSenderId: "996982358637",
+            appId: "1:996982358637:web:1adcf03392a68d5c6f3564",
+            measurementId: "G-4L2GTKRRMF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const userRef = doc(db, 'deliveryPartners', email);
+                const userDoc = await getDoc(userRef);
+
+                if (userDoc.exists() && userDoc.data().password === password) {
+                    localStorage.setItem('userData', JSON.stringify(userDoc.data()));
+                    localStorage.setItem('userEmail', email);
+                    window.location.href = 'accept.html';
+                } else {
+                    alert('Invalid email or password.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accepted Orders</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        #userName {
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+
+        /* Container for Orders */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .order {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .order:hover {
+            background-color: #f1f1f1;
+        }
+
+        .order h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        .order p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .order ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .order li {
+            margin-bottom: 10px;
+        }
+
+        .order button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .order button:hover {
+            background-color: #45a049;
+        }
+
+        /* No Orders Message */
+        .no-orders {
+            font-size: 1.2em;
+            color: #888;
+            text-align: center;
+        }
+
+        /* QR Code Section */
+        #qrcode {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 0;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            #userName {
+                font-size: 1em;
+            }
+
+            .order h3 {
+                font-size: 1.2em;
+            }
+
+            .order p, .order ul {
+                font-size: 1em;
+            }
+
+            .order button {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .order h3 {
+                font-size: 1.1em;
+            }
+
+            .order p {
+                font-size: 0.95em;
+            }
+
+            .order button {
+                font-size: 0.8em;
+                padding: 7px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Accepted Orders</h1>
+        <p id="userName">Welcome, Partner</p>
+    </header>
+    <div class="container" id="acceptedOrders2">
+        <p class="no-orders" id="noOrders">No accepted orders found.</p>
+    </div>
+
+    <div id="qrcode" style="text-align: center; margin-top: 20px;"></div> <!-- QR Code Container -->
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4_h-2b2_IjrfvSKOxHrL9gWotG-SanFo",
+            authDomain: "zolowworder.firebaseapp.com",
+            projectId: "zolowworder",
+            storageBucket: "zolowworder.appspot.com",
+            messagingSenderId: "996982358637",
+            appId: "1:996982358637:web:1adcf03392a68d5c6f3564",
+            measurementId: "G-4L2GTKRRMF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem("userData"));
+            const userNameElement = document.getElementById('userName');
+            const acceptedOrdersContainer = document.getElementById('acceptedOrders2');
+            const noOrdersElement = document.getElementById('noOrders');
+
+            if (userData) {
+                userNameElement.textContent = `Welcome, ${userData.partnerName}`;
+                fetchAndDisplayAcceptedOrders(userData);
+            }
+
+            function fetchAndDisplayAcceptedOrders(userData) {
+                const acceptedOrders = userData.ordersAccepted;
+
+                // Clear previous content
+                acceptedOrdersContainer.innerHTML = '';
+
+                if (!acceptedOrders || Object.keys(acceptedOrders).length === 0) {
+                    noOrdersElement.style.display = 'block';
+                    return;
+                }
+
+                noOrdersElement.style.display = 'none';
+
+                for (const orderId in acceptedOrders) {
+                    if (acceptedOrders.hasOwnProperty(orderId)) {
+                        const order = acceptedOrders[orderId];
+                        const products = order.products || [];
+
+                        const orderDiv = document.createElement('div');
+                        orderDiv.classList.add('order');
+
+                        orderDiv.innerHTML = `
+                            <h3>Order ID: ${orderId}</h3>
+                            <p><strong>Address:</strong> ${order.address}</p>
+                            <p><strong>Delivery Deadline:</strong> ${order.deliveryDeadline}</p>
+                            <p><strong>Order Date:</strong> ${new Date(order.orderDate).toLocaleString()}</p>
+                            <p><strong>Total:</strong> ₹${order.total}</p>
+                            <p><strong>Status:</strong> ${order.status}</p>
+                            <p><strong>Coordinates:</strong> Lat ${order.latitude}, Long ${order.longitude}</p>
+                            <h4>Products:</h4>
+                            <ul>
+                                ${products
+                                    .map(product => `
+                                        <li>
+                                            <strong>Product:</strong> ${product.product}<br>
+                                            <strong>Warehouse:</strong> ${product.warehouseName}<br>
+                                            <strong>Package Type:</strong> ${product.packageType}<br>
+                                            <strong>Price:</strong> ₹${product.price}
+                                        </li>`)
+                                    .join('')}
+                            </ul>
+                            <button onclick='scanningqr("${orderId}", "${order.total}")'>Scan Order</button>
+                        `;
+
+                        acceptedOrdersContainer.appendChild(orderDiv);
+                    }
+                }
+            }
+
+            window.scanningqr = function (orderId, totalAmount) {
+                // You can implement QR scanning logic here
+                const videoElement = document.createElement('video');
+                document.body.appendChild(videoElement);
+
+                const constraints = {
+                    video: { facingMode: "environment" }  // Open the back camera
+                };
+
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(stream => {
+                        videoElement.srcObject = stream;
+                        videoElement.play();
+
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        document.body.appendChild(canvas);
+
+                        function scanQRCode() {
+                            canvas.width = videoElement.videoWidth;
+                            canvas.height = videoElement.videoHeight;
+                            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+                            // Use a QR scanning library, for example `jsQR`
+                            const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
+                            if (qrCode) {
+                                alert(`QR Code detected for Order ID: ${orderId}`);
+                                console.log('QR Code Data:', qrCode.data);
+
+                                // Generate the UPI QR code after scanning the order
+                                generateUPIQRCode(orderId, totalAmount);
+
+                                // Stop the video stream and remove canvas
+                                stream.getTracks().forEach(track => track.stop());
+                                videoElement.remove();
+                                canvas.remove();
+                            } else {
+                                requestAnimationFrame(scanQRCode);
+                            }
+                        }
+
+                        scanQRCode();
+                    })
+                    .catch(err => {
+                        console.error("Error accessing the camera: ", err);
+                    });
+            };
+
+            function generateUPIQRCode(orderId, totalAmount) {
+                const qrCodeElement = document.getElementById('qrcode');
+                qrCodeElement.innerHTML = '';  // Clear previous QR code
+                const upiAddress = 'skrohanhsr@axl';
+                const upiData = `upi://pay?pa=${upiAddress}&pn=YourName&mc=0000&tid=1234567890&tr=${orderId}&tn=Payment for Order ${orderId}&am=${totalAmount}&cu=INR`;
+
+                const qrCode = new QRCode(qrCodeElement, {
+                    text: upiData,
+                    width: 200,
+                    height: 200
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script> <!-- QR code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode.js"></script> <!-- QR code generation library -->
+</body>
+</html>
