@@ -187,8 +187,8 @@
                 font-size: 14px;
             }
         }
-
     </style>
+
     <header>
         <nav class="navbar">
             <div class="navbar-title">
@@ -246,7 +246,6 @@
                         const { latitude, longitude } = pos.coords;
                         document.getElementById('latitude').textContent = latitude.toFixed(4);
                         document.getElementById('longitude').textContent = longitude.toFixed(4);
-
                         fetchOrders(latitude, longitude);
                     },
                     (error) => {
@@ -349,8 +348,7 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distance = R * c; // Distance in kilometers
-            return distance;
+            return R * c; // Distance in kilometers
         }
     </script>
 </body>
