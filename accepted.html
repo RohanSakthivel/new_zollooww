@@ -3,176 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accepted Orders</title>
+    <title>Order Verification - Zoloww</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <style>
-        /* Global Styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: #f8f9fa;
         }
-
-        header {
-            background-color: #4CAF50;
-            color: white;
-            width: 100%;
-            padding: 15px 0;
+        .navbar {
+            background-color: #343a40;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-title img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .navbar-title h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        #orders-section {
+            padding: 20px;
+        }
+        h2 {
+            color: #343a40;
             text-align: center;
+        }
+        #order-container {
+            margin-top: 20px;
+        }
+        .order-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        h1 {
-            margin: 0;
-            font-size: 2em;
+        .order-item strong {
+            color: #343a40;
         }
-
-        #userName {
-            font-size: 1.2em;
-            margin-top: 5px;
-        }
-
-        /* Container for Orders */
-        .container {
-            max-width: 900px;
-            width: 100%;
-            padding: 20px;
-            margin-top: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .order {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-        .order:hover {
-            background-color: #f1f1f1;
-        }
-
-        .order h3 {
-            font-size: 1.4em;
-            margin-bottom: 10px;
-        }
-
-        .order p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin: 5px 0;
-        }
-
-        .order ul {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-
-        .order li {
-            margin-bottom: 10px;
-        }
-
-        .order button {
-            background-color: #4CAF50;
-            color: white;
+        button {
+            padding: 8px 12px;
+            color: #fff;
+            background-color: #007bff;
             border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin-top: 10px;
         }
-
-        .order button:hover {
-            background-color: #45a049;
+        button:hover {
+            background-color: #0056b3;
         }
-
-        /* No Orders Message */
-        .no-orders {
-            font-size: 1.2em;
-            color: #888;
+        #error-message {
+            color: #d9534f;
             text-align: center;
         }
-
-        /* QR Code Section */
         #qrcode {
-            margin-top: 20px;
             text-align: center;
         }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            header {
-                padding: 10px 0;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            #userName {
-                font-size: 1em;
-            }
-
-            .order h3 {
-                font-size: 1.2em;
-            }
-
-            .order p, .order ul {
-                font-size: 1em;
-            }
-
-            .order button {
-                font-size: 0.9em;
-                padding: 8px 15px;
-            }
-
-            .container {
-                padding: 15px;
-            }
+        #scanner-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.6em;
-            }
-
-            .order h3 {
-                font-size: 1.1em;
-            }
-
-            .order p {
-                font-size: 0.95em;
-            }
-
-            .order button {
-                font-size: 0.8em;
-                padding: 7px 12px;
-            }
+        #scanner-container video {
+            width: 80%;
+            max-width: 500px;
+            border: 5px solid #fff;
+            border-radius: 10px;
+        }
+        #scanner-container button {
+            margin-top: 20px;
+            background: #dc3545;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Accepted Orders</h1>
-        <p id="userName">Welcome, Partner</p>
-    </header>
-    <div class="container" id="acceptedOrders2">
-        <p class="no-orders" id="noOrders">No accepted orders found.</p>
-    </div>
+    <nav class="navbar">
+        <div class="navbar-title">
+            <img src="logo.png" alt="Zoloww Logo">
+            <h1>Zoloww</h1>
+        </div>
+    </nav>
 
-    <div id="qrcode" style="text-align: center; margin-top: 20px;"></div> <!-- QR Code Container -->
+    <section id="orders-section">
+        <h2>Order Verification</h2>
+        <div id="order-container"></div>
+        <div id="error-message"></div>
+        <div id="qrcode" style="margin-top: 20px;"></div>
+    </section>
+
+    <div id="scanner-container">
+        <video id="scanner-video"></video>
+        <button onclick="stopScanner()">Close Scanner</button>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD4_h-2b2_IjrfvSKOxHrL9gWotG-SanFo",
@@ -187,131 +131,118 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const userData = JSON.parse(localStorage.getItem("userData"));
-            const userNameElement = document.getElementById('userName');
-            const acceptedOrdersContainer = document.getElementById('acceptedOrders2');
-            const noOrdersElement = document.getElementById('noOrders');
+        async function fetchOrders() {
+            const orderContainer = document.getElementById('order-container');
+            const errorMessage = document.getElementById('error-message');
+            const userEmail = localStorage.getItem('userEmail');
+            orderContainer.innerHTML = '<p>Loading orders...</p>';
+            errorMessage.textContent = '';
 
-            if (userData) {
-                userNameElement.textContent = `Welcome, ${userData.partnerName}`;
-                fetchAndDisplayAcceptedOrders(userData);
+            if (!userEmail) {
+                displayError("User email not found. Redirecting to login...");
+                setTimeout(() => window.location.href = '/login.html', 3000);
+                return;
             }
 
-            function fetchAndDisplayAcceptedOrders(userData) {
-                const acceptedOrders = userData.ordersAccepted;
+            try {
+                const userRef = doc(db, 'deliveryPartners', userEmail);
+                const userDoc = await getDoc(userRef);
 
-                // Clear previous content
-                acceptedOrdersContainer.innerHTML = '';
-
-                if (!acceptedOrders || Object.keys(acceptedOrders).length === 0) {
-                    noOrdersElement.style.display = 'block';
-                    return;
-                }
-
-                noOrdersElement.style.display = 'none';
-
-                for (const orderId in acceptedOrders) {
-                    if (acceptedOrders.hasOwnProperty(orderId)) {
-                        const order = acceptedOrders[orderId];
-                        const products = order.products || [];
-
-                        const orderDiv = document.createElement('div');
-                        orderDiv.classList.add('order');
-
-                        orderDiv.innerHTML = `
-                            <h3>Order ID: ${orderId}</h3>
-                            <p><strong>Address:</strong> ${order.address}</p>
-                            <p><strong>Delivery Deadline:</strong> ${order.deliveryDeadline}</p>
-                            <p><strong>Order Date:</strong> ${new Date(order.orderDate).toLocaleString()}</p>
-                            <p><strong>Total:</strong> ₹${order.total}</p>
-                            <p><strong>Status:</strong> ${order.status}</p>
-                            <p><strong>Coordinates:</strong> Lat ${order.latitude}, Long ${order.longitude}</p>
-                            <h4>Products:</h4>
-                            <ul>
-                                ${products
-                                    .map(product => `
-                                        <li>
-                                            <strong>Product:</strong> ${product.product}<br>
-                                            <strong>Warehouse:</strong> ${product.warehouseName}<br>
-                                            <strong>Package Type:</strong> ${product.packageType}<br>
-                                            <strong>Price:</strong> ₹${product.price}
-                                        </li>`)
-                                    .join('')}
-                            </ul>
-                            <button onclick='scanningqr("${orderId}", "${order.total}")'>Scan Order</button>
-                        `;
-
-                        acceptedOrdersContainer.appendChild(orderDiv);
+                if (userDoc.exists()) {
+                    const orders = userDoc.data().ordersAccepted || {};
+                    if (Object.keys(orders).length === 0) {
+                        displayError("No orders found.");
+                        return;
                     }
+                    displayOrders(orders);
+                } else {
+                    displayError("User profile not found.");
                 }
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                displayError("Failed to load orders.");
             }
+        }
 
-            window.scanningqr = function (orderId, totalAmount) {
-                // You can implement QR scanning logic here
-                const videoElement = document.createElement('video');
-                document.body.appendChild(videoElement);
+        function displayOrders(orders) {
+            const orderContainer = document.getElementById('order-container');
+            orderContainer.innerHTML = '';
+            for (const [orderId, details] of Object.entries(orders)) {
+                const { total = "0", address = "N/A", status = "N/A" } = details;
+                const orderHTML = `
+                    <div class="order-item">
+                        <strong>Order ID:</strong> ${orderId}<br>
+                        <strong>Status:</strong> ${status}<br>
+                        <strong>Total:</strong> ₹${total}<br>
+                        <strong>Address:</strong> ${address}<br>
+                        <button onclick="startScanner('${orderId}')">Scan & Verify</button>
+                    </div>
+                `;
+                orderContainer.insertAdjacentHTML('beforeend', orderHTML);
+            }
+        }
 
-                const constraints = {
-                    video: { facingMode: "environment" }  // Open the back camera
-                };
+        function displayError(message) {
+            document.getElementById('error-message').textContent = message;
+        }
 
-                navigator.mediaDevices.getUserMedia(constraints)
-                    .then(stream => {
-                        videoElement.srcObject = stream;
-                        videoElement.play();
+        let scannerStream;
 
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        document.body.appendChild(canvas);
+        function startScanner(orderId) {
+            const scannerContainer = document.getElementById('scanner-container');
+            const videoElement = document.getElementById('scanner-video');
+            scannerContainer.style.display = 'flex';
 
-                        function scanQRCode() {
-                            canvas.width = videoElement.videoWidth;
-                            canvas.height = videoElement.videoHeight;
-                            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    scannerStream = stream;
+                    videoElement.srcObject = stream;
+                    videoElement.play();
 
-                            // Use a QR scanning library, for example `jsQR`
-                            const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-                            if (qrCode) {
-                                alert(`QR Code detected for Order ID: ${orderId}`);
-                                console.log('QR Code Data:', qrCode.data);
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
 
-                                // Generate the UPI QR code after scanning the order
-                                generateUPIQRCode(orderId, totalAmount);
+                    function scanFrame() {
+                        canvas.width = videoElement.videoWidth;
+                        canvas.height = videoElement.videoHeight;
+                        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
 
-                                // Stop the video stream and remove canvas
-                                stream.getTracks().forEach(track => track.stop());
-                                videoElement.remove();
-                                canvas.remove();
-                            } else {
-                                requestAnimationFrame(scanQRCode);
-                            }
+                        if (qrCode && qrCode.data === orderId) {
+                            alert("Order Verified!");
+                            stopScanner();
+                            triggerVibration();
+                        } else {
+                            requestAnimationFrame(scanFrame);
                         }
-
-                        scanQRCode();
-                    })
-                    .catch(err => {
-                        console.error("Error accessing the camera: ", err);
-                    });
-            };
-
-            function generateUPIQRCode(orderId, totalAmount) {
-                const qrCodeElement = document.getElementById('qrcode');
-                qrCodeElement.innerHTML = '';  // Clear previous QR code
-                const upiAddress = 'skrohanhsr@axl';
-                const upiData = `upi://pay?pa=${upiAddress}&pn=YourName&mc=0000&tid=1234567890&tr=${orderId}&tn=Payment for Order ${orderId}&am=${totalAmount}&cu=INR`;
-
-                const qrCode = new QRCode(qrCodeElement, {
-                    text: upiData,
-                    width: 200,
-                    height: 200
+                    }
+                    scanFrame();
+                })
+                .catch(err => {
+                    console.error("Camera error:", err);
+                    alert("Unable to access camera.");
+                    stopScanner();
                 });
-            }
-        });
-    </script>
+        }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script> <!-- QR code library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode.js"></script> <!-- QR code generation library -->
+        function stopScanner() {
+            const scannerContainer = document.getElementById('scanner-container');
+            const videoElement = document.getElementById('scanner-video');
+            scannerContainer.style.display = 'none';
+            if (scannerStream) {
+                scannerStream.getTracks().forEach(track => track.stop());
+            }
+            videoElement.srcObject = null;
+        }
+
+        function triggerVibration() {
+            if (navigator.vibrate) {
+                navigator.vibrate(200); // Vibrate for 200ms
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchOrders);
+    </script>
 </body>
 </html>
