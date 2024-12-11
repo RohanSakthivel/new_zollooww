@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoloww - Delivery Partner Login</title>
+    <title>Zoloww - Delivery Partner</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -28,10 +28,26 @@
         </form>
     </section>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    <!-- Dashboard Section -->
+    <section id="dashboard" style="display: none;">
+        <h2 id="welcomeMessage" style="display: none;">Welcome, <span id="userName"></span>!<br>Vehicle: <span id="vehicleType"></span></h2>
 
+        <div id="locationDisplay" style="display: none;">
+            <p><strong>Latitude:</strong> <span id="latitude"></span></p>
+            <p><strong>Longitude:</strong> <span id="longitude"></span></p>
+        </div>
+
+        <h3>Orders within 2km</h3>
+        <div id="order-container"></div>
+        <div id="error-message"></div>
+    </section>
+
+    <script type="module">
+        // Import Firebase libraries
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyD4_h-2b2_IjrfvSKOxHrL9gWotG-SanFo",
             authDomain: "zolowworder.firebaseapp.com",
@@ -42,14 +58,18 @@
             measurementId: "G-4L2GTKRRMF"
         };
 
+        // Initialize Firebase app and Firestore
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        document.addEventListener('DOMContentLoaded', function () {
+        let userEmail = "";
+
+        // Login function
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const userEmail = document.getElementById('loginEmail').value;
+                userEmail = document.getElementById('loginEmail').value;
                 const loginPassword = document.getElementById('loginPassword').value;
 
                 try {
@@ -59,10 +79,13 @@
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
                         if (userData.password === loginPassword) {
-                            localStorage.setItem('userName', userData.partnerName);
-                            localStorage.setItem('vehicleType', userData.vehicleType);
-                            localStorage.setItem('userEmail', userEmail);
-                            window.location.href = 'order.html';
+                            document.getElementById('userName').textContent = userData.partnerName;
+                            document.getElementById('vehicleType').textContent = userData.vehicleType;
+                            document.getElementById('welcomeMessage').style.display = 'block';
+                            document.getElementById('loginForm').reset();
+                            document.getElementById('loginSection').style.display = 'none';
+                            document.getElementById('dashboard').style.display = 'block';
+                            getLocation(userData.partnerName);
                         } else {
                             alert("Incorrect password. Please try again.");
                         }
@@ -75,6 +98,165 @@
                 }
             });
         });
+
+        // Function to get user location
+        function getLocation(userName) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => showPosition(position, userName), showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Display user location and fetch nearby orders
+        function showPosition(position, userName) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            document.getElementById('latitude').textContent = latitude;
+            document.getElementById('longitude').textContent = longitude;
+            document.getElementById('locationDisplay').style.display = 'block';
+
+            fetchOrders(latitude, longitude);
+        }
+
+        // Handle location errors
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        // Calculate distance between two coordinates
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in km
+        }
+
+        // Fetch orders within 2km of user's location
+        async function fetchOrders(userLat, userLon) {
+            const orderContainer = document.getElementById('order-container');
+            const errorContainer = document.getElementById('error-message');
+            orderContainer.innerHTML = '';
+            errorContainer.textContent = '';
+
+            try {
+                const ordersSnapshot = await getDocs(collection(db, 'orders'));
+
+                if (ordersSnapshot.empty) {
+                    errorContainer.textContent = "No orders found.";
+                    setTimeout(() => fetchOrders(userLat, userLon), 2000);
+                    return;
+                }
+
+                ordersSnapshot.forEach(doc => {
+                    const orderData = doc.data();
+                    const latituded = orderData.latitude || "N/A";
+                    const longituded = orderData.longitude || "N/A";
+
+                    if (latituded !== "N/A" && longituded !== "N/A") {
+                        const distance = calculateDistance(userLat, userLon, latituded, longituded);
+                        if (distance <= 2) {
+                            const orderItem = document.createElement('div');
+                            orderItem.className = 'order-item';
+
+                            const timestamp = orderData.timestamp || "N/A";
+                            const total = orderData.total || "0";
+                            const address = orderData.address || "N/A";
+                            const pincode = orderData.pincode || "N/A";
+                            const email = orderData.email || "N/A";
+                            const mobileNumber = orderData.mobileNumber || "N/A";
+                            const products = orderData.products || [];
+
+                            orderItem.innerHTML = `
+                                <strong>Order ID:</strong> ${doc.id} <br>
+                                <strong>Timestamp:</strong> ${timestamp} <br>
+                                <strong>Total Amount:</strong> ₹${total} <br>
+                                <strong>Address:</strong> ${address}, ${pincode} <br>
+                                <strong>Email:</strong> ${email} <br>
+                                <strong>Mobile:</strong> ${mobileNumber} <br>
+                                <strong>Distance:</strong> ${distance.toFixed(2)} km <br>
+                                <strong>Products:</strong> 
+                                <ul>
+                                    ${products.map(item => `<li>${item.product || "N/A"} (${item.packageType || "N/A"}, ₹${item.price || "0"})</li>`).join('')}
+                                </ul>
+                                <button class="acceptBtn" data-id="${doc.id}">Accept Order</button>
+                                <a href="https://www.google.com/maps?q=${latituded},${longituded}">
+                                    <div class="card-min"><h5>Customer Location</h5></div>
+                                </a>
+                            `;
+
+                            orderItem.querySelector('.acceptBtn').addEventListener('click', () => acceptOrder(doc.id));
+                            orderContainer.appendChild(orderItem);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching orders: ", error);
+                errorContainer.textContent = "Failed to load orders. Please try again later.";
+            }
+        }
+
+        // Accept order functionality
+        async function acceptOrder(orderId) {
+            try {
+                const orderRef = doc(db, 'orders', orderId);
+                const orderDoc = await getDoc(orderRef);
+
+                if (orderDoc.exists()) {
+                    const orderDetails = orderDoc.data();
+                    const userRef = doc(db, 'deliveryPartners', userEmail);
+
+                    // Update user profile with accepted order
+                    await updateDoc(userRef, {
+                        [`ordersAccepted.${orderId}`]: {
+                            total: orderDetails.total,
+                            address: orderDetails.address,
+                            status: 'Accepted',
+                            latitude: orderDetails.latitude,
+                            longitude: orderDetails.longitude,
+                            orderDate: orderDetails.timestamp || new Date().toISOString(),
+                            deliveryDeadline: orderDetails.deliveryDeadline || 'Not Provided',
+                            products: orderDetails.products || [],
+                        }
+                    });
+
+                    // Update order status
+                    await updateDoc(orderRef, {
+                        status: 'Accepted',
+                        acceptedBy: userEmail,
+                    });
+
+                    // Delete the order from the collection
+                    await deleteDoc(orderRef);
+
+                    alert(`Order ${orderId} accepted successfully!`);
+                    window.location.href = 'accepted.html'; 
+                } else {
+                    alert('Order not found!');
+                }
+            } catch (error) {
+                console.error('Error accepting order:', error);
+                alert(`Failed to accept the order: ${error.message}`);
+            }
+        }
     </script>
 </body>
 </html>
