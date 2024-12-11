@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Verification - Zoloww</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Accepted Orders - Zoloww</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,15 +27,12 @@
             margin: 0;
             font-size: 20px;
         }
-        #orders-section {
+        #acceptedOrders {
             padding: 20px;
         }
         h2 {
             color: #343a40;
             text-align: center;
-        }
-        #order-container {
-            margin-top: 20px;
         }
         .order-item {
             background: #fff;
@@ -59,6 +53,9 @@
             border-radius: 4px;
             cursor: pointer;
             margin-top: 10px;
+            width: 100%;
+            max-width: 150px;
+            margin: 10px auto;
         }
         button:hover {
             background-color: #0056b3;
@@ -67,30 +64,18 @@
             color: #d9534f;
             text-align: center;
         }
-        #qrcode {
-            text-align: center;
-        }
-        #scanner-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        #scanner-container video {
-            width: 80%;
-            max-width: 500px;
-            border: 5px solid #fff;
-            border-radius: 10px;
-        }
-        #scanner-container button {
-            margin-top: 20px;
-            background: #dc3545;
+        @media (max-width: 600px) {
+            .order-item {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .navbar-title h1 {
+                font-size: 18px;
+            }
+            button {
+                width: 80%;
+                max-width: 200px;
+            }
         }
     </style>
 </head>
@@ -102,17 +87,11 @@
         </div>
     </nav>
 
-    <section id="orders-section">
-        <h2>Order Verification</h2>
+    <section id="acceptedOrders">
+        <h2>Accepted Orders</h2>
         <div id="order-container"></div>
         <div id="error-message"></div>
-        <div id="qrcode" style="margin-top: 20px;"></div>
     </section>
-
-    <div id="scanner-container">
-        <video id="scanner-video"></video>
-        <button onclick="stopScanner()">Close Scanner</button>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -131,12 +110,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function fetchOrders() {
+        async function fetchAcceptedOrders() {
             const orderContainer = document.getElementById('order-container');
-            const errorMessage = document.getElementById('error-message');
+            const errorContainer = document.getElementById('error-message');
             const userEmail = localStorage.getItem('userEmail');
             orderContainer.innerHTML = '<p>Loading orders...</p>';
-            errorMessage.textContent = '';
+            errorContainer.textContent = '';
 
             if (!userEmail) {
                 displayError("User email not found. Redirecting to login...");
@@ -149,18 +128,18 @@
                 const userDoc = await getDoc(userRef);
 
                 if (userDoc.exists()) {
-                    const orders = userDoc.data().ordersAccepted || {};
-                    if (Object.keys(orders).length === 0) {
-                        displayError("No orders found.");
+                    const acceptedOrders = userDoc.data().ordersAccepted || {};
+                    if (Object.keys(acceptedOrders).length === 0) {
+                        displayError("No accepted orders found.");
                         return;
                     }
-                    displayOrders(orders);
+                    displayOrders(acceptedOrders);
                 } else {
                     displayError("User profile not found.");
                 }
             } catch (error) {
-                console.error("Error fetching orders:", error);
-                displayError("Failed to load orders.");
+                console.error('Error fetching accepted orders:', error);
+                displayError("Failed to load orders. Try again later.");
             }
         }
 
@@ -168,14 +147,16 @@
             const orderContainer = document.getElementById('order-container');
             orderContainer.innerHTML = '';
             for (const [orderId, details] of Object.entries(orders)) {
-                const { total = "0", address = "N/A", status = "N/A" } = details;
+                const { total = "0", address = "N/A", status = "N/A", products = [] } = details;
                 const orderHTML = `
                     <div class="order-item">
                         <strong>Order ID:</strong> ${orderId}<br>
                         <strong>Status:</strong> ${status}<br>
                         <strong>Total:</strong> ₹${total}<br>
                         <strong>Address:</strong> ${address}<br>
-                        <button onclick="startScanner('${orderId}')">Scan & Verify</button>
+                        <strong>Products:</strong>
+                        <ul>${products.map(p => `<li>${p.product} (₹${p.price})</li>`).join('')}</ul>
+                        <button onclick="window.location.href='scan.html?orderId=${orderId}&totalAmount=${total}'">Scan QR Code</button>
                     </div>
                 `;
                 orderContainer.insertAdjacentHTML('beforeend', orderHTML);
@@ -186,63 +167,7 @@
             document.getElementById('error-message').textContent = message;
         }
 
-        let scannerStream;
-
-        function startScanner(orderId) {
-            const scannerContainer = document.getElementById('scanner-container');
-            const videoElement = document.getElementById('scanner-video');
-            scannerContainer.style.display = 'flex';
-
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(stream => {
-                    scannerStream = stream;
-                    videoElement.srcObject = stream;
-                    videoElement.play();
-
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-
-                    function scanFrame() {
-                        canvas.width = videoElement.videoWidth;
-                        canvas.height = videoElement.videoHeight;
-                        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
-
-                        if (qrCode && qrCode.data === orderId) {
-                            alert("Order Verified!");
-                            stopScanner();
-                            triggerVibration();
-                        } else {
-                            requestAnimationFrame(scanFrame);
-                        }
-                    }
-                    scanFrame();
-                })
-                .catch(err => {
-                    console.error("Camera error:", err);
-                    alert("Unable to access camera.");
-                    stopScanner();
-                });
-        }
-
-        function stopScanner() {
-            const scannerContainer = document.getElementById('scanner-container');
-            const videoElement = document.getElementById('scanner-video');
-            scannerContainer.style.display = 'none';
-            if (scannerStream) {
-                scannerStream.getTracks().forEach(track => track.stop());
-            }
-            videoElement.srcObject = null;
-        }
-
-        function triggerVibration() {
-            if (navigator.vibrate) {
-                navigator.vibrate(200); // Vibrate for 200ms
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', fetchOrders);
+        document.addEventListener('DOMContentLoaded', fetchAcceptedOrders);
     </script>
 </body>
 </html>

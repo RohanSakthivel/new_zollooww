@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner UI</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e293b, #3b82f6);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        #camera {
+            width: 90%;
+            max-width: 400px;
+            height: auto;
+            border: 5px solid #ffffff44;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        #output {
+            margin-top: 15px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .success-message, .error-message {
+            display: none;
+            margin-top: 20px;
+            width: 90%;
+            max-width: 400px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .success-message {
+            background-color: #1e293b;
+        }
+        .error-message {
+            background-color: #b91c1c;
+        }
+        .success-message svg, .error-message svg {
+            width: 40px;
+            height: 40px;
+        }
+        .success-message h2 {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            color: #2b9875;
+        }
+        .error-message h2 {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            color: #fff;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        .back-button {
+            display: none;
+            margin-top: 20px;
+            background-color: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <video id="camera" autoplay playsinline></video>
+    <p id="output">Scanning for QR Code...</p>
+    <div id="successMessage" class="success-message">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path>
+        </svg>
+        <h2>Order Successfully Completed!</h2>
+        <p>Your QR Code has been verified.</p>
+    </div>
+    <div id="errorMessage" class="error-message">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01m-6.938-4A7.938 7.938 0 0112 4.062V4a7.938 7.938 0 016.938 3.938A7.938 7.938 0 0112 20.938v-.001A7.938 7.938 0 015.062 12z"></path>
+        </svg>
+        <h2>Error Accessing Camera</h2>
+        <p>Please check your device and try again.</p>
+    </div>
+    <button class="back-button" onclick="goBack()">Back</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+    <script>
+        const outputElement = document.getElementById('output');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const videoElement = document.getElementById('camera');
+
+        // Canvas for QR Code processing
+        const canvasElement = document.createElement('canvas');
+        const canvasContext = canvasElement.getContext('2d');
+
+        let videoStream;
+
+        // Extract order details from query parameters
+        const params = new URLSearchParams(window.location.search);
+        const expectedQRCode = params.get('orderId') || 'sample_order_id';
+
+        // Initialize camera
+        async function startCamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                videoElement.srcObject = videoStream;
+                videoElement.addEventListener('loadeddata', scanQRCode);
+                outputElement.textContent = "Scanning for QR Code...";
+            } catch (error) {
+                showError(error);
+            }
+        }
+
+        // QR Code scanning function
+        function scanQRCode() {
+            if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
+                canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+                const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                const qrCode = jsQR(imageData.data, canvasElement.width, canvasElement.height);
+
+                if (qrCode) {
+                    if (qrCode.data === expectedQRCode) {
+                        outputElement.textContent = "QR Code Verified!";
+                        showSuccessMessage();
+                        stopCamera();
+                    } else {
+                        outputElement.textContent = `Detected QR Code: ${qrCode.data}`;
+                    }
+                } else {
+                    outputElement.textContent = "No QR Code detected. Scanning...";
+                }
+            }
+            requestAnimationFrame(scanQRCode);
+        }
+
+        // Display success message
+        function showSuccessMessage() {
+            successMessage.style.display = "block";
+            document.querySelector('.back-button').style.display = "inline-block";
+        }
+
+        // Display error message
+        function showError(error) {
+            errorMessage.style.display = "block";
+            errorMessage.querySelector('p').textContent = `Error: ${error.message}`;
+            stopCamera();
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            videoElement.srcObject = null;
+        }
+
+        // Go back to previous page
+        function goBack() {
+            window.location.href = "order.html"; // Replace with your desired page
+        }
+
+        // Start the camera when the page loads
+        window.onload = startCamera;
+    </script>
+</body>
+</html>
